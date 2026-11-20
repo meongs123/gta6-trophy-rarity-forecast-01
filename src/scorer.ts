@@ -1,8 +1,8 @@
-// Pinball loss on the logit scale (build-spec Langkah 4).
+// Pinball loss on the logit scale (v2).
 //
 // Local backtest use ONLY: this module is not imported by the entry's
-// forecast path, so it can never change an output. It must match the RULES
-// definition exactly:
+// forecast path, so it can never change an output. It matches the
+// RULES definition exactly:
 //
 //   clamp each rate to [0.01, 99.99];  logit(x) = ln(x / (100 - x))
 //   d = logit(y_true) - logit(q_tau)
@@ -12,7 +12,7 @@
 // Coverage90 is the share of trophies whose true rate lies inside
 // [q05, q95].
 
-import { clampRate, logitOf } from "./quantiles.ts";
+import { clampRate, logitOf } from "./spread.ts";
 
 export const LEVELS = [0.05, 0.25, 0.5, 0.75, 0.95];
 
@@ -51,6 +51,7 @@ export function scoreForecast(
     }
   }
   const n = truthPct.length;
+  void items;
   return {
     loss: Math.round((total / Math.max(1, n)) * 1e6) / 1e6,
     coverage90: n > 0 ? covered / n : 0,
